@@ -1,0 +1,132 @@
+package com.dipanshushukla.cop_map_auth_service.service;
+
+import java.io.ByteArrayInputStream;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.converter.RsaKeyConverters;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import com.dipanshushukla.cop_map_auth_service.entity.User;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+@Data
+public class JwtService {
+
+    @Value("${jwt.public-key}")
+    private String publicKeyPem;
+
+    @Value("${jwt.private-key}")
+    private String privateKeyPem;
+
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
+
+    @PostConstruct
+    public void init() {
+        try {
+            log.info("Loading RSA keys from config...");
+            this.privateKey = RsaKeyConverters.pkcs8()
+                    .convert(new ByteArrayInputStream(privateKeyPem.getBytes()));
+            this.publicKey = RsaKeyConverters.x509()
+                    .convert(new ByteArrayInputStream(publicKeyPem.getBytes()));
+            log.info("Keys loaded successfully");
+        } catch (Exception e) {
+            log.error("Failed to load RSA keys", e);
+            throw new RuntimeException("Failed to initialize JwtService", e);
+        }
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public boolean isValid(String token, UserDetails user) {
+        String username = extractUsername(token);
+        return username.equals(user.getUsername()) && !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> resolver) {
+        Claims claims = extractAllClaims(token);
+        return resolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(publicKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String generateAccessToken(User user) {
+        return Jwts
+                .builder()
+                .setSubject(user.getUsername())
+                .claim("userId", user.getUserId().toString())
+                .claim("username", user.getUsername())
+                .claim("badgeNumber", user.getBadgeNumber())
+                .claim("thanaId", user.getThanaId())
+                .claim("role", user.getRole().name())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 6L * 60 * 60 * 1000))
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(User user) {
+        return Jwts
+                .builder()
+                .setSubject(user.getUsername())
+                .claim("userId", user.getUserId().toString())
+                .claim("thanaId", user.getThanaId())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000))
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact();
+    }
+
+    public Object getJwks() {
+        RSAPublicKey rsaPublicKey = (RSAPublicKey) this.getPublicKey();
+
+        Map<String, Object> jwk = new HashMap<>();
+        jwk.put("kty", "RSA");
+        jwk.put("kid", "auth-service-key");
+        jwk.put("n", base64Url(rsaPublicKey.getModulus().toByteArray()));
+        jwk.put("e", base64Url(rsaPublicKey.getPublicExponent().toByteArray()));
+
+        return Map.of("keys", List.of(jwk));
+    }
+
+    private String base64Url(byte[] bytes) {
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(bytes);
+    }
+}
