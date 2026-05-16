@@ -1,0 +1,82 @@
+server:
+    port: 8080
+spring:
+    # application:
+    #     name: cop-map-gateway-service
+    config:
+        import: "configserver:"
+    # cloud:
+    #     config:
+    #         discovery:
+    #             enabled: true
+    #             service-id: cop-map-config-service
+    application:
+        name: cop-map-gateway-service
+    cloud:
+        gateway.server.webflux:
+            discovery:
+                locator:
+                    enabled: true
+                    lower-case-service-id: true
+            routes:
+                # 1. Auth & Identity Service
+                - id: auth-service
+                  uri: lb://cop-map-auth-service
+                  predicates:
+                      - Path=/api/v1/auth/**
+                
+                # 2. User Endpoints (Secured - RBAC CRUD)
+                - id: user-service
+                  uri: lb://cop-map-auth-service
+                  predicates:
+                      - Path=/api/v1/users/**
+
+                # # 2. Core Service (Operations, Teams, Master Data)
+                # - id: core-service
+                #   uri: lb://copmap-core-service
+                #   predicates:
+                #     - Path=/api/v1/core/**
+
+                # # 3. Location Service (Standard HTTP for pings/history)
+                # - id: location-service-http
+                #   uri: lb://copmap-location-service
+                #   predicates:
+                #     - Path=/api/v1/location/**
+
+                # # 4. Location Service (WebSockets for Live Map)
+                # - id: location-service-ws
+                #   uri: lb:ws://copmap-location-service
+                #   predicates:
+                #     - Path=/ws/stream/**
+
+            globalcors:
+                add-to-simple-url-handler-mapping: true
+                corsConfigurations:
+                    "[/**]":
+                        allowedOriginPatterns:
+                            - "*"
+                        allowedMethods:
+                            - GET
+                            - POST
+                            - PUT
+                            - PATCH
+                            - DELETE
+                            - OPTIONS
+                        allowedHeaders:
+                            - "*"
+                        allowCredentials: true
+
+logging:
+    level:
+        org.springframework.cloud.gateway.filter: DEBUG
+        org.springframework.cloud.gateway.handler: DEBUG
+        org.springframework.web.servlet.DispatcherServlet: DEBUG
+        # If using Spring Security, this shows exactly which URL patterns are evaluated:
+        org.springframework.security.web.FilterChainProxy: DEBUG
+
+eureka:
+    client:
+        service-url:
+            defaultZone: ${EUREKA_SERVER_URI:}
+    instance:
+        instance-id: ${spring.application.name}:${random.value}
