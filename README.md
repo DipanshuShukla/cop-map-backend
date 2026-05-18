@@ -1,1 +1,1 @@
-# CopMap Backend Assessment Monorepo
+# CopMap Backend Assessment
