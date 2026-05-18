@@ -24,18 +24,18 @@ spring:
                   uri: lb://cop-map-auth-service
                   predicates:
                       - Path=/api/v1/auth/**
-                
-                # 2. User Endpoints (Secured - RBAC CRUD)
+
+                # 2. User Service
                 - id: user-service
                   uri: lb://cop-map-auth-service
                   predicates:
                       - Path=/api/v1/users/**
 
-                # # 2. Core Service (Operations, Teams, Master Data)
-                # - id: core-service
-                #   uri: lb://copmap-core-service
-                #   predicates:
-                #     - Path=/api/v1/core/**
+                # 2. Core Endpoints
+                - id: core-Service
+                  uri: lb://cop-map-core-service
+                  predicates:
+                      - Path=/api/v1/core/**
 
                 # # 3. Location Service (Standard HTTP for pings/history)
                 # - id: location-service-http
