@@ -1,0 +1,24 @@
+server:
+  port: 8282
+
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.1.77:5432/cop_map_app
+    username: root
+    password: rootpassword
+  jpa:
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      host: 192.168.1.77
+      port: 6379
+      password: ""
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+  cache:
+    type: redis
