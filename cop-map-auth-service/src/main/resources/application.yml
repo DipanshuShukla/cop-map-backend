@@ -1,0 +1,19 @@
+spring:
+    application:
+        name: cop-map-auth-service
+    config:
+        import: "configserver:"
+
+    cloud:
+        config:
+            discovery:
+                enabled: true
+                service-id: cop-map-config-service
+            fail-fast: true
+
+eureka:
+    client:
+        service-url:
+            defaultZone: ${EUREKA_SERVER_URI:}
+    instance:
+        instance-id: ${spring.application.name}:${random.value}
