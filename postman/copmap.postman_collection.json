@@ -1,0 +1,698 @@
+{
+  "info": {
+    "_postman_id": "5c320079-b11e-4b34-ad17-1b5ed1aca3eb",
+    "name": "copmap",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47659129"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "jwks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/auth/.well-known/jwks.json",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                ".well-known",
+                "jwks.json"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set(\"jwt_token\", pm.response.json().accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"badgeNumber\": \"MH-PUN-001\",\n    \"password\": \"Secure@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/auth/login",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refreshToken\": \"eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJNSC1QVU4tMDAxIiwidXNlcklkIjoiNDc0MWZlNjctOWQ4Ni00YjM2LTgyYTQtNDE4OGQ4MjRmZTA3IiwidGhhbmFJZCI6IlRIQU5BX1BVTkVfQ0VOVFJBTCIsImlhdCI6MTc3ODk3MzYxNiwiZXhwIjoxNzgxNTY1NjE2fQ.jZxu7kMj8WJvfnVE0h_EJ2ruK8x2oWCiX0-4m-4A377ePp4PVkTIEh6rYxq8xv6nMg6f_tmyXu3cTewqVNDNL9TvHo7dclqRcGB2dBup-Iw2ayboIW38oYBmE_7bI1i3f2OaRoW49fDQXH_jTh7wjn_M2y5xm96yE6dQHOpc0LkFJyeSsfuSc9mFaoqANCcBxVexmTJdm2eDvBcrjrOhoFmqXQfUTNDq4jHxhnOE5pl6-xT7mb7hlUki3a9nGTZfMM1d42W7W2KedPbgGn6K0lPDmcau92vl3lohVy9VZouWdraYS3e0ztUkFbjZhSIQJshRXOmkgvo8qChU3Tc2aA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/auth/refresh-token",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Officers in a Thana",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/users/thana/THANA_PUNE_CENTRAL",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "thana",
+                "THANA_PUNE_CENTRAL"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Officer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"badgeNumber\": \"MH-PUN-045\",\n    \"fullName\": \"Constable Amit Patil\",\n    \"username\": \"amit_patil\",\n    \"password\": \"Secure@123\",\n    \"email\": \"amit@copmap.in\",\n    \"phoneNumber\": \"9876543211\",\n    \"thanaId\": \"THANA_PUNE_CENTRAL\",\n    \"role\": \"CONSTABLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/users",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Specific Officer by Badge Number",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"badgeNumber\": \"MH-PUN-045\",\n    \"fullName\": \"Constable Amit Patil\",\n    \"username\": \"amit_patil\",\n    \"password\": \"Secure@123\",\n    \"email\": \"amit@copmap.in\",\n    \"phoneNumber\": \"9876543211\",\n    \"thanaId\": \"THANA_PUNE_CENTRAL\",\n    \"role\": \"CONSTABLE\"\n}"
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/users/MH-PUN-045",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "MH-PUN-045"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Officer Information",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"badgeNumber\": \"MH-PUN-045\",\n    \"fullName\": \"Constable Amit Patil (Updated)\",\n    \"username\": \"amit_patil\",\n    \"email\": \"amit.patil_new@copmap.in\",\n    \"phoneNumber\": \"9998887776\",\n    \"thanaId\": \"THANA_PUNE_CENTRAL\",\n    \"role\": \"CONSTABLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/users/MH-PUN-045",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "MH-PUN-045"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{jwt_token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Core - Master Data",
+      "item": [
+        {
+          "name": "Create Naka",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Main Street & 5th Ave Junction new\",\n    \"latitude\": 18.5204,\n    \"longitude\": 73.8567,\n    \"laneDirection\": \"Northbound\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/core/master/nakas",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "master",
+                "nakas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Beat",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Sector 4 Night Patrol Route\",\n    \"routeCoordinates\": [\n        {\"latitude\": 18.5204, \"longitude\": 73.8567},\n        {\"latitude\": 18.5220, \"longitude\": 73.8580},\n        {\"latitude\": 18.5250, \"longitude\": 73.8600}\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/core/master/beats",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "master",
+                "beats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all nakas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/core/master/nakas",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "master",
+                "nakas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all beats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/core/master/beats",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "master",
+                "beats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{jwt_token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Core - Operations",
+      "item": [
+        {
+          "name": "Create Draft Operation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Friday Night Anti-Drunk Driving\",\n    \"type\": \"NAKABANDI\",\n    \"startTime\": \"2026-05-22T22:00:00\",\n    \"endTime\": \"2026-05-23T03:00:00\",\n    \"referenceId\": \"123e4567-e89b-12d3-a456-426614174000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/core/operations",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "operations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Officer to Operation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"badgeNumber\": \"MH-PUN-045\",\n    \"teamName\": \"Team Alpha\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URI}}/api/v1/core/operations/:operation_id/assignments",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "operations",
+                ":operation_id",
+                "assignments"
+              ],
+              "variable": [
+                {
+                  "key": "operation_id",
+                  "value": "c75d6810-727e-40bb-8b07-0ed1b1f6c7c8"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Operation",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/core/operations/:operation_id/publish",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "operations",
+                ":operation_id",
+                "publish"
+              ],
+              "variable": [
+                {
+                  "key": "operation_id",
+                  "value": "c75d6810-727e-40bb-8b07-0ed1b1f6c7c8"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Operations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/core/operations/active",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "operations",
+                "active"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{jwt_token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Core - Assignments",
+      "item": [
+        {
+          "name": "Get My Assignments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/core/assignments/me",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "assignments",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check-In",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/core/assignments/:assignment_id/check-in",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "assignments",
+                ":assignment_id",
+                "check-in"
+              ],
+              "variable": [
+                {
+                  "key": "assignment_id",
+                  "value": "c75d6810-727e-40bb-8b07-0ed1b1f6c7c8"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check-Out",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/core/assignments/:assignment_id/check-out",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "assignments",
+                ":assignment_id",
+                "check-out"
+              ],
+              "variable": [
+                {
+                  "key": "assignment_id",
+                  "value": "c75d6810-727e-40bb-8b07-0ed1b1f6c7c8"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Duty Log",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{URI}}/api/v1/core/assignments/:assignment_id/logs",
+              "host": [
+                "{{URI}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "core",
+                "assignments",
+                ":assignment_id",
+                "logs"
+              ],
+              "variable": [
+                {
+                  "key": "assignment_id",
+                  "value": "c75d6810-727e-40bb-8b07-0ed1b1f6c7c8"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{jwt_token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": ""
+    }
+  ]
+}
