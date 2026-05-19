@@ -1,0 +1,15 @@
+server:
+  port: 8181
+
+spring:
+  datasource:
+    url: jdbc:postgresql://copmap-postgres:5432/copmap_db
+    username: copmap_user
+    password: copmap_password
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  private-key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7tAotvXHZCsmn\nHdWgjuusm9zNkZkWTPWPjIgm46fg6C+Ehz0w0D2os9nGg7TEBFB598aGUstGb2wA\nc3d2msuLElbhyxvK66iZctNyoFzvgUkHVz3Ku4QLDT6a6khXxfazbvYwyhuJMCPH\ntsnkqvJLCGhIRJ/g55xc3Z0iU3hJnBiZOVdq95cIOf8fP7/AJI9CyBN3k1kbLOJg\njt3nulOJ7cA1rytfUqEFgWFiOkp7pAkNGOkhOZVJuI9wND4E5cdgppvRwy0IDXLt\np+5QSTtbshfLC/MzicjsNiz/0s1ViWBZ+yyvcnKZN2WC3fVv1jZkU20HGFaTKtS5\nF0u8sVgXAgMBAAECggEABMUnCxGI7qSdCk+ySaHIMHtHibvdAZmUFgFSxnY7onYU\nGxCax/5KytpDOw3GzsJzTx4yX+CDxPb47iwBCbUWXiLprVRNkQMbJkcqQ3v60KVe\n9z5K1jecu/EquaIhk4V25wl3XTcNqxdbmWw2Rkbn4GtGxytjSsJoEV4aa7BmWqx/\nHiLggNHiUvMnJb4vZl/10qGVZ28v1c7bFE/aybAE627kWkbJ8S+yF3X0WlzIQva6\nleNZ1ZCshaWrdjmGlytGn4yb0es/16f8D0udN5pr1VhQcyjJvSjngV2+ZRo/4OKr\nD8aRzQTxERC3HmGM/WvUuCpy7n4m8yfJCFKnxDHVUQKBgQD7ma5EPyR6azEyTQ62\n7poUnqB2FrjShmBb1z8SCDiUpZm6EfnQ6Uz60rqJJRw+yZPXWhePoCTMdfNPcZyM\nYBfupHZeNZeqpYI+hmmOt6FF0bTopG2p3IC1KlQinHNa7r+s58ysI2C8u7l17fir\n7SrAcnW35ff79r8T65m0M8U50QKBgQC+/FDztS4B+H5yw7EgtfjPjPWT2IBCB0gf\nriKDn79xWo7tSjC/OF04Rfur/8RqQ8ePSghi0QIEzPpW1hevE+Dchx+pDCKhhnYJ\nZiQWZelLa6+X6Bl/rwLTnqVJM4wtwBW3rn3hXojSEck5bF4fA7wdy0JyqOoG8mJZ\nHDyjAlYFZwKBgDhuKJrf+qOGZTtd8x3ueBqF1YGG6R82ymfu6BN4SpB0b/0+yOQl\nX4GmP/ZAn4wplAIqD7zD81z0W4UG+1C0wMlik7XfmUvJ4WN6rDQ5VW+ecE/5iSse\n7LM1cjdtFaZghBcYylwVdz39cMRVgn+1KvCM+4AqkSsvFX43SnsTXXnxAoGBAKVK\nmoVR+U+bUVTiKRq2Y3C9/ozGg7qhsro4a4afa4EfbzPPUgEtNwDNENP7uHJ/1ucc\nm8VqPuUIwmEFSdosyiASkkQsTIyfYukfjXwVF6Q+vuop5mergDbGxyZjhp7R7/nY\n+vliZ+fnnNAmCg+tm9HtaMTzjBgXDycwWQp7qxdhAoGAaTMjiGvtI4m2RgxQvXcg\nzv1e/rovJ14r8nAfSj9ZmhyczBRJ1iw6Jo+sOa/5z1X+5T5kjYLq6br1GMOhsquG\nQQ4CRbkKRj30FjkIla2khePXnR7x6tWMNxKuImNbJYCf4qg0+pALqaktxlC9ar+/\nMv6xOBiZlSAtnNF/ehtiJYc=\n-----END PRIVATE KEY-----"
+  public-key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu7QKLb1x2QrJpx3VoI7r\nrJvczZGZFkz1j4yIJuOn4OgvhIc9MNA9qLPZxoO0xARQeffGhlLLRm9sAHN3dprL\nixJW4csbyuuomXLTcqBc74FJB1c9yruECw0+mupIV8X2s272MMobiTAjx7bJ5Kry\nSwhoSESf4OecXN2dIlN4SZwYmTlXaveXCDn/Hz+/wCSPQsgTd5NZGyziYI7d57pT\nie3ANa8rX1KhBYFhYjpKe6QJDRjpITmVSbiPcDQ+BOXHYKab0cMtCA1y7afuUEk7\nW7IXywvzM4nI7DYs/9LNVYlgWfssr3JymTdlgt31b9Y2ZFNtBxhWkyrUuRdLvLFY\nFwIDAQAB\n-----END PUBLIC KEY-----"

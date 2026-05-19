@@ -1,0 +1,142 @@
+networks:
+  copmap-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+
+services:
+  # ----------------------------------------
+  # API GATEWAY / REVERSE PROXY (EXTERNAL)
+  # ----------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: copmap-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - copmap-network
+    depends_on:
+      - gateway-service
+
+  # ----------------------------------------
+  # BACKING SERVICES (INTERNAL)
+  # ----------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: copmap-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: copmap_user
+      POSTGRES_PASSWORD: copmap_password
+      POSTGRES_DB: copmap_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - copmap-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: copmap-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - copmap-network
+
+  # ----------------------------------------
+  # SPRING CLOUD INFRASTRUCTURE (INTERNAL)
+  # ----------------------------------------
+  registry-service:
+    build:
+      context: ./cop-map-central-registry-service
+    container_name: copmap-registry-service
+    restart: unless-stopped
+    environment:
+      - SERVER_PORT=8761
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+    networks:
+      - copmap-network
+
+  config-service:
+    build:
+      context: ./cop-map-central-config-service
+    container_name: copmap-config-service
+    restart: unless-stopped
+    environment:
+      - SERVER_PORT=8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka/
+    networks:
+      - copmap-network
+    depends_on:
+      - registry-service
+
+  gateway-service:
+    build:
+      context: ./cop-map-gateway-service
+    container_name: copmap-gateway-service
+    restart: unless-stopped
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - copmap-network
+    depends_on:
+      - registry-service
+      - config-service
+      - auth-service
+
+  # ----------------------------------------
+  # DOMAIN MICROSERVICES (INTERNAL)
+  # ----------------------------------------
+  auth-service:
+    build:
+      context: ./cop-map-auth-service
+    container_name: copmap-auth-service
+    restart: unless-stopped
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - copmap-network
+    depends_on:
+      - postgres
+      - registry-service
+      - config-service
+
+  core-service:
+    build:
+      context: ./cop-map-core-service
+    container_name: copmap-core-service
+    restart: unless-stopped
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - copmap-network
+    depends_on:
+      - postgres
+      - redis
+      - registry-service
+      - config-service
+
+  location-service:
+    build:
+      context: ./cop-map-location-service
+    container_name: copmap-location-service
+    restart: unless-stopped
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - copmap-network
+    depends_on:
+      - redis
+      - registry-service
+      - config-service
+      - auth-service

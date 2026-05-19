@@ -4,7 +4,7 @@ spring:
   application:
     name: cop-map-gateway-service
   cloud:
-    gateway:
+    gateway.server.webflux:
       discovery:
         locator:
           enabled: true
